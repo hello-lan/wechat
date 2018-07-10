@@ -21,9 +21,6 @@ class Pipeline(MongoPipeline):
     query_fields = ['key']
 
 
-#mongo_url = "mongodb://wr:123456@192.168.2.6"
-#db_name = 'test'
-#coll_name = 'test_brandy'
 mongo_url = settings.MONGO_URL
 db_name = settings.WECHAT_DB
 coll_name = settings.WECHAT_COLL

@@ -13,7 +13,7 @@ import settings
 
 mongo_url = settings.MONGO_URL
 mongo_db = settings.URL_DB
-mongo_coll = 'brandy'
+mongo_coll = settings.URL_COLL
 
 app = Application().Connect(title='微信')
 
@@ -23,7 +23,6 @@ wechat = app['微信']
 with MongoPipeline(mongo_url, mongo_db, mongo_coll) as pipe:
     for item in pipe.find():
         url = item['url']
-        # print(url)
         pywinauto.mouse.click(button='left', coords=(1387, 544))
         wechat.TypeKeys(url)
         wechat.TypeKeys('{ENTER}')

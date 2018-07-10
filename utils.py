@@ -5,62 +5,7 @@
 
 @author:Brook
 """
-import os
-import sqlite3
 from pymongo import MongoClient
-
-
-class Pipeline:
-    def __init__(self, db, table):
-        f =  os.path.expanduser(db)
-        dirname = os.path.dirname(f)
-        if not os.path.exists(dirname):
-            os.makedirs(dirname)
-        self.db = f 
-        self.table = table
-
-    def start(self):
-        self.conn = sqlite3.connect(self.db)
-        self.cur = self.conn.cursor()
-
-    def close(self):
-        self.conn.commit()
-        self.conn.close()
-
-    def __enter__(self):
-        self.start()
-        return self
-
-    def __exit__(self, *args, **kwarfs):
-        self.close()
-
-    def process_item(self, item):
-        keys, values = list(zip(*item.items()))
-        fields = ", ".join(keys)
-        values = repr(values)
-        sql = """insert into {tb}({fields}) values {values}""".format(tb=self.table, fields=fields, values=values)
-        try:
-            self.cur.execute(sql)
-        except sqlite3.OperationalError:
-            # 如果不存在插入的表，则创建它
-            #self.create_table(item.__class__)
-            self.create_table(item)
-            self.conn.commit()
-            self.cur.execute(sql)
-        self.conn.commit()
-        
-    def create_table(self, Item):
-        #attrs = ItemClass.__dict__['fields'].keys()
-        attrs = Item.keys()
-
-        fields = ", ".join(["{field} Text".format(field=attr) for attr in attrs])
-        sql = """
-            CREATE TABLE {tb} ({fields});
-        """.format(tb=self.table, fields=fields)
-        self.cur.execute(sql)
-        self.conn.commit() 
-
-
 
 
 class MongoPipeline:
@@ -88,7 +33,7 @@ class MongoPipeline:
         try:
             self.coll.insert_one(item)
         except:
-            self.close()   
+            pass
             
     def find(self, *args, **kwargs):
         return self.coll.find(*args, **kwargs)
@@ -98,8 +43,4 @@ class MongoPipeline:
 
     def __exit__(self, type, value, trace):
         self.close()
-
-    def process_item(self, item):
-        self.insert(item)
-
 
