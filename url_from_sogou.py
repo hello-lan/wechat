@@ -84,7 +84,7 @@ if __name__ == "__main__":
         for kw in keywords:
             for item in search.search(kw):
                 item['keword'] = kw
-                pipe.insert_item(item)
+                pipe.insert(item)
 
 
 
