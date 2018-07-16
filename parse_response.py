@@ -58,9 +58,16 @@ def parse_article(req_url, key, resp):
     item = {}
     item['key'] = key
     item['url'] = req_url
-    item['title'] = sel.xpath("//script/text()").re_first('var msg_title = "(.*)"')
-    item['author'] = sel.xpath("//script/text()").re_first('var nickname = "(.*)"')
-    item['date'] = sel.xpath("//script/text()").re_first('var publish_time = "(.*?)"', "")
+    title = sel.xpath("//script/text()").re_first('var msg_title = "(.*)"')
+    if title is None:
+        title = sel.xpath("//h2[@id='activity-name']/text()").extract_first()
+    item['title'] = title
+    mauthor = re.search('var nickname = "(.*?)"', resp)
+    if mauthor:
+        item['author'] = mauthor.group(1)
+    mdate = re.search('var publish_time = "([\d\-]+)"', resp)
+    if mdate:
+        item['date'] = mdate.group(1)
     item['article'] = "".join([s.strip() for s in sel.xpath("//div[@id='js_content']//text()").extract()])
     return item
 
