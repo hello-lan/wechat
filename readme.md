@@ -50,7 +50,7 @@ WECHAT_COLL = "wechat"
 [brook@localhost wechat]$ pip3 install mitmproxy
 ```
 
-- 第四步：找一台安装有微信客户端的windows电脑，设置代理为linux的ip，同时还需要安装证书，证书下载地址[证书链接](http://mitm.it/)
+- 第四步：找一台安装有微信客户端的windows电脑(windows7)，设置代理为linux的ip，同时还需要安装证书，证书下载地址[证书链接](http://mitm.it/)
 
 - 第五步：复制整个代码到windows上，在windows上启动微信，打开一个好友的聊天界面（建议拖到右上角后不要再移动它），点击截图工具，移动鼠标定位聊天窗口的输入框的记录像素点位置， 修改windows_run.py文件（见注释部分的说明）
 
